@@ -5,16 +5,18 @@ using Microsoft.Xna.Framework.Input;
 namespace SpaceShooter
 {
     /// <summary>
-    /// This is the main type for your game.
+    /// Matheos space shooter.
     /// </summary>
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        
 
         //Variabler
         Texture2D ship_texture;
         Vector2 ship_vector; //Rymdsheppets position
+        Vector2 ship_speed; //Rymdsheppets hastighet
 
         public Game1()
         {
@@ -33,6 +35,10 @@ namespace SpaceShooter
             // TODO: Add your initialization logic here
             ship_vector.X = 380;
             ship_vector.Y = 400;
+
+            ship_speed.X = 50f;
+            ship_speed.Y = 50f;
+
 
             base.Initialize();
         }
@@ -66,13 +72,45 @@ namespace SpaceShooter
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+                this.Exit();
 
-            // TODO: Add your update logic here
+
+            KeyboardState keyboardState = Keyboard.GetState();
+
+            if (ship_vector.X <= Window.ClientBounds.Width - ship_texture.Width && ship_vector.X >= 0)
+            {
+                if (keyboardState.IsKeyDown(Keys.Right))
+                    ship_vector.X += ship_speed.X;
+                if (keyboardState.IsKeyDown(Keys.Left))
+                    ship_vector.X -= ship_speed.X;
+            }
+
+            if (ship_vector.Y <= Window.ClientBounds.Height - ship_texture.Height && ship_vector.Y >= 0)
+            {
+                if (keyboardState.IsKeyDown(Keys.Down))
+                    ship_vector.Y += ship_speed.Y;
+                if (keyboardState.IsKeyDown(Keys.Up))
+                    ship_vector.Y -= ship_speed.Y;
+            }
+
+            if (ship_vector.X < 0)
+                ship_vector.X = 0;
+            if (ship_vector.X > Window.ClientBounds.Width - ship_texture.Width)
+            {
+                ship_vector.X = Window.ClientBounds.Width - ship_texture.Width;
+            }
+
+            if (ship_vector.Y < 0)
+                ship_vector.Y = 0;
+            if (ship_vector.Y > Window.ClientBounds.Height - ship_texture.Height)
+            {
+                ship_vector.Y = Window.ClientBounds.Height - ship_texture.Height;
+            }
 
             base.Update(gameTime);
         }
+        
 
         /// <summary>
         /// This is called when the game should draw itself.
@@ -80,7 +118,7 @@ namespace SpaceShooter
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             // TODO: Add your drawing code here'
             spriteBatch.Begin();
