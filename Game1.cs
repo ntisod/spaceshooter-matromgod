@@ -56,8 +56,6 @@ namespace SpaceShooter
         protected override void Update(GameTime gameTime)
         {
             player.Update(Window);
-
-            base.Update(gameTime);
         }
         
 
